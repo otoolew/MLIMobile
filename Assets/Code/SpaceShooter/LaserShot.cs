@@ -1,0 +1,36 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class LaserShot : MonoBehaviour {
+    [Header("How long until I destroy myself?")]
+    public float lifeSpan;
+    [Header("How fast do I go?")]
+    public float shotSpeed;
+    [Header("What do I collide with?")]
+    public string[] collisionTags;
+
+    // Use this for initialization
+    void Start()
+    {
+        transform.parent = null;            // Unparent the bullet so it does not follow the Tank that fired it.
+        Destroy(gameObject, lifeSpan);      // Destroy me after a specified time.
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        transform.Translate(Vector3.forward * Time.deltaTime * shotSpeed); // Move Up over time by the speed
+    }
+    private void OnTriggerEnter2D(Collider2D collisonObject)
+    {
+        foreach (var collisionTag in collisionTags)
+        {
+            if (collisonObject.tag.Equals(collisionTag))
+            {
+                Destroy(collisonObject.gameObject); // Destroy the object I collided with
+                Destroy(gameObject);                // Destroy myself!
+            }
+        }
+    }
+}
